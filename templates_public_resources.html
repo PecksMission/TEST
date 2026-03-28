@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+
+{% block title %}Healthcare Resources - Surgery Day Builder{% endblock %}
+
+{% block content %}
+<section class="resources-section">
+    <div class="container">
+        <h1>Healthcare Resources</h1>
+        <p class="section-subtitle">Helpful information for your health journey</p>
+        
+        <div class="resources-grid">
+            <article class="resource-card">
+                <h3>Medical Records</h3>
+                <p>Learn how to organize and access your medical records from healthcare providers.</p>
+                <ul>
+                    <li><a href="https://www.healthit.gov/patients-families/your-medical-records" target="_blank">Your Medical Records (healthit.gov)</a></li>
+                    <li><a href="https://www.ama-assn.org/patients" target="_blank">American Medical Association - Patient Resources</a></li>
+                </ul>
+            </article>
+            
+            <article class="resource-card">
+                <h3>Patient Advocacy</h3>
+                <p>Organizations dedicated to patient rights and support.</p>
+                <ul>
+                    <li><a href="https://www.patientadvocatefoundation.org/" target="_blank">Patient Advocate Foundation</a></li>
+                    <li><a href="https://www.acpa.com/" target="_blank">American Chronic Pain Association</a></li>
+                </ul>
+            </article>
+            
+            <article class="resource-card">
+                <h3>Mental Health Support</h3>
+                <p>Mental health is part of your health journey.</p>
+                <ul>
+                    <li><a href="https://www.nami.org/" target="_blank">National Alliance on Mental Illness</a></li>
+                    <li><a href="https://www.samhsa.gov/find-help/national-helpline" target="_blank">SAMHSA National Helpline</a></li>
+                </ul>
+            </article>
+            
+            <article class="resource-card">
+                <h3>Peer Support</h3>
+                <p>Connect with others who understand your journey.</p>
+                <ul>
+                    <li><a href="https://www.caringbridge.org/" target="_blank">CaringBridge - Share Your Health Journey</a></li>
+                    <li><a href="https://www.reddit.com/r/HealthAnxiety/" target="_blank">Reddit Health Communities</a></li>
+                </ul>
+            </article>
+            
+            <article class="resource-card">
+                <h3>Financial Assistance</h3>
+                <p>Help with healthcare costs and medical bills.</p>
+                <ul>
+                    <li><a href="https://www.healthcarebluebook.com/" target="_blank">Healthcare Blue Book</a></li>
+                    <li><a href="https://www.financialhealth.org/" target="_blank">National Foundation for Credit Counseling</a></li>
+                </ul>
+            </article>
+            
+            <article class="resource-card">
+                <h3>Second Opinions</h3>
+                <p>Get additional professional perspectives on your care.</p>
+                <ul>
+                    <li><a href="https://www.mayoclinic.org/" target="_blank">Mayo Clinic</a></li>
+                    <li><a href="https://www.clevelandclinic.org/" target="_blank">Cleveland Clinic</a></li>
+                </ul>
+            </article>
+        </div>
+        
+        <div class="disclaimer">
+            <p><strong>Disclaimer:</strong> Surgery Day Builder is not a medical service. Always consult with qualified healthcare providers for medical advice, diagnosis, or treatment. The resources listed are provided for informational purposes only.</p>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.resources-section {
+    padding: var(--spacing-2xl) var(--spacing-lg);
+}
+
+.resources-section h1 {
+    font-size: 2.5rem;
+    font-family: var(--font-secondary);
+    text-align: center;
+    margin-bottom: var(--spacing-md);
+    color: var(--black);
+}
+
+.section-subtitle {
+    text-align: center;
+    color: #666;
+    margin-bottom: var(--spacing-2xl);
+    font-size: 1.1rem;
+}
+
+.resources-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--spacing-xl);
+    margin-bottom: var(--spacing-2xl);
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.resource-card {
+    background: var(--white);
+    padding: var(--spacing-xl);
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border-left: 4px solid var(--clinical);
+    transition: all 0.3s ease;
+}
+
+.resource-card:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.resource-card h3 {
+    color: var(--clinical);
+    margin-bottom: var(--spacing-md);
+    font-size: 1.2rem;
+}
+
+.resource-card p {
+    color: #666;
+    margin-bottom: var(--spacing-lg);
+    line-height: 1.6;
+}
+
+.resource-card ul {
+    list-style: none;
+}
+
+.resource-card li {
+    margin-bottom: var(--spacing-sm);
+}
+
+.resource-card a {
+    color: var(--clinical);
+    text-decoration: none;
+    transition: color 0.3s ease;
+    font-weight: 500;
+}
+
+.resource-card a:hover {
+    color: var(--gold);
+    text-decoration: underline;
+}
+
+.disclaimer {
+    background: #fff3cd;
+    padding: var(--spacing-lg);
+    border-radius: 8px;
+    border-left: 4px solid var(--warning);
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.disclaimer p {
+    color: #856404;
+    margin: 0;
+    line-height: 1.6;
+}
+</style>
+{% endblock %}

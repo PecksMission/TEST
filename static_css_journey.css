@@ -1,0 +1,634 @@
+/* ============================================================================
+   JOURNEY STYLING
+   ============================================================================ */
+
+/* Builder Layout */
+.journey-builder-container {
+    padding: var(--spacing-xl);
+}
+
+.builder-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-xl);
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* Chat Panel */
+.chat-panel {
+    background: var(--white);
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 200px);
+    max-height: 700px;
+}
+
+.chat-header {
+    padding: var(--spacing-lg);
+    border-bottom: 1px solid var(--border);
+}
+
+.chat-header h2 {
+    font-size: 1.3rem;
+    color: var(--black);
+    margin-bottom: var(--spacing-sm);
+}
+
+.chat-header p {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.messages-container {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--spacing-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+.message {
+    display: flex;
+    gap: var(--spacing-md);
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.message.user {
+    justify-content: flex-end;
+}
+
+.message-content {
+    max-width: 80%;
+    padding: var(--spacing-md) var(--spacing-lg);
+    border-radius: 8px;
+    line-height: 1.5;
+}
+
+.message.assistant .message-content {
+    background: var(--bg-light);
+    color: var(--black);
+    border-left: 3px solid var(--clinical);
+}
+
+.message.user .message-content {
+    background: var(--clinical);
+    color: var(--white);
+}
+
+.chat-form {
+    padding: var(--spacing-lg);
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: var(--spacing-md);
+}
+
+.chat-form textarea {
+    flex: 1;
+    padding: var(--spacing-md);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-family: var(--font-primary);
+    font-size: 0.95rem;
+    resize: vertical;
+    min-height: 60px;
+}
+
+.chat-form button {
+    align-self: flex-end;
+    white-space: nowrap;
+}
+
+/* Preview Panel */
+.preview-panel {
+    background: var(--white);
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 200px);
+    max-height: 700px;
+}
+
+.preview-header {
+    padding: var(--spacing-lg);
+    border-bottom: 1px solid var(--border);
+}
+
+.preview-header h3 {
+    color: var(--black);
+    font-size: 1.2rem;
+}
+
+.preview-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--spacing-lg);
+}
+
+.preview-section {
+    margin-bottom: var(--spacing-xl);
+    padding-bottom: var(--spacing-lg);
+    border-bottom: 1px solid var(--border);
+}
+
+.preview-section h4 {
+    color: var(--clinical);
+    margin-bottom: var(--spacing-sm);
+    font-weight: bold;
+}
+
+.preview-section p,
+.preview-section li {
+    color: #666;
+    line-height: 1.6;
+}
+
+.preview-section ul {
+    margin-left: var(--spacing-lg);
+    list-style: disc;
+}
+
+/* Journey Header */
+.journey-header {
+    background: linear-gradient(135deg, var(--black) 0%, #2a2d30 100%);
+    color: var(--white);
+    padding: var(--spacing-2xl) var(--spacing-lg);
+    border-bottom: 3px solid var(--gold);
+}
+
+.header-content {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.journey-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: var(--spacing-md);
+    font-family: var(--font-secondary);
+}
+
+.condition {
+    font-size: 1.3rem;
+    color: var(--gold);
+    margin-bottom: var(--spacing-md);
+}
+
+.dates {
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: var(--spacing-lg);
+    font-size: 1rem;
+}
+
+.journey-actions {
+    display: flex;
+    gap: var(--spacing-lg);
+    margin-top: var(--spacing-lg);
+}
+
+/* Progress Board */
+.progress-board {
+    background: var(--white);
+    padding: var(--spacing-2xl) var(--spacing-lg);
+    border-bottom: 1px solid var(--border);
+}
+
+.stages-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--spacing-lg);
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.stage-card {
+    padding: var(--spacing-lg);
+    border-left: 4px solid var(--clinical);
+    background: var(--bg-light);
+    border-radius: 4px;
+    position: relative;
+}
+
+.stage-dot {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    top: -6px;
+    left: -6px;
+}
+
+.stage-card h3 {
+    color: var(--black);
+    margin-bottom: var(--spacing-sm);
+    font-weight: bold;
+}
+
+.stage-card p {
+    color: #666;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+/* Timeline */
+.timeline-section {
+    padding: var(--spacing-2xl) var(--spacing-lg);
+    background: var(--white);
+}
+
+.timeline {
+    position: relative;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-left: 40px;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 15px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--border);
+}
+
+.timeline-entry {
+    position: relative;
+    margin-bottom: var(--spacing-2xl);
+    padding-bottom: var(--spacing-xl);
+    border-bottom: 1px solid var(--border);
+}
+
+.timeline-entry:last-child {
+    border-bottom: none;
+}
+
+.timeline-marker {
+    position: absolute;
+    left: -38px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 3px solid var(--white);
+    top: 0;
+    box-shadow: 0 0 0 2px var(--border);
+}
+
+.entry-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.entry-date {
+    font-weight: bold;
+    color: var(--clinical);
+    font-size: 0.9rem;
+}
+
+.entry-type {
+    display: inline-block;
+    width: fit-content;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.entry-type-clinical {
+    background: #e3f2fd;
+    color: var(--clinical);
+}
+
+.entry-type-faith {
+    background: #fce4ec;
+    color: var(--faith);
+}
+
+.entry-type-family {
+    background: #fff9c4;
+    color: var(--family);
+}
+
+.entry-title {
+    color: var(--black);
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin: var(--spacing-sm) 0;
+}
+
+.entry-text {
+    color: #666;
+    line-height: 1.7;
+}
+
+/* Comments Section */
+.comments-section {
+    background: var(--bg-light);
+    padding: var(--spacing-2xl) var(--spacing-lg);
+}
+
+.comments-section h2 {
+    max-width: 1200px;
+    margin: 0 auto var(--spacing-xl);
+    font-size: 1.5rem;
+    color: var(--black);
+}
+
+.comment-form {
+    max-width: 1200px;
+    margin: 0 auto var(--spacing-xl);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.comment-form input,
+.comment-form textarea {
+    padding: var(--spacing-md);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-family: var(--font-primary);
+    font-size: 0.95rem;
+}
+
+.comment-form textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.comment-form button {
+    align-self: flex-start;
+}
+
+.comments-list {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+.comment-item {
+    background: var(--white);
+    padding: var(--spacing-lg);
+    border-radius: 4px;
+    border-left: 3px solid var(--clinical);
+}
+
+.comment-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-md);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 1px solid var(--border);
+}
+
+.comment-author {
+    font-weight: bold;
+    color: var(--black);
+}
+
+.comment-date {
+    color: #999;
+    font-size: 0.9rem;
+}
+
+.comment-text {
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: var(--spacing-md);
+}
+
+.comment-reactions {
+    display: flex;
+    gap: var(--spacing-md);
+    flex-wrap: wrap;
+}
+
+.reaction-button {
+    background: var(--bg-light);
+    border: 1px solid var(--border);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all 0.3s ease;
+}
+
+.reaction-button:hover {
+    background: var(--clinical);
+    color: var(--white);
+    border-color: var(--clinical);
+}
+
+/* Dashboard */
+.dashboard-container {
+    padding: var(--spacing-2xl) var(--spacing-lg);
+}
+
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-2xl);
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.dashboard-header h1 {
+    font-size: 2rem;
+    font-family: var(--font-secondary);
+    color: var(--black);
+}
+
+.journeys-table {
+    max-width: 1200px;
+    margin: 0 auto;
+    overflow-x: auto;
+}
+
+.journeys-table table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--white);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.journeys-table thead {
+    background: var(--black);
+    color: var(--white);
+}
+
+.journeys-table th {
+    padding: var(--spacing-lg);
+    text-align: left;
+    font-weight: bold;
+}
+
+.journeys-table td {
+    padding: var(--spacing-lg);
+    border-bottom: 1px solid var(--border);
+}
+
+.journeys-table tbody tr:hover {
+    background: var(--bg-light);
+}
+
+.journeys-table .actions {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.journeys-table .button {
+    padding: var(--spacing-xs) var(--spacing-md);
+    font-size: 0.85rem;
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-lg);
+}
+
+.modal-content {
+    background: var(--white);
+    padding: var(--spacing-2xl);
+    border-radius: 8px;
+    max-width: 500px;
+    width: 100%;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    position: relative;
+}
+
+.modal-close {
+    position: absolute;
+    top: var(--spacing-lg);
+    right: var(--spacing-lg);
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #999;
+}
+
+.modal-content h3 {
+    margin-bottom: var(--spacing-lg);
+    color: var(--black);
+}
+
+.modal-content p {
+    color: #666;
+    margin-bottom: var(--spacing-lg);
+}
+
+.modal-buttons {
+    display: flex;
+    gap: var(--spacing-lg);
+    justify-content: flex-end;
+}
+
+/* Share Options */
+.share-option {
+    margin-bottom: var(--spacing-lg);
+}
+
+.share-option label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: var(--spacing-sm);
+    color: var(--black);
+}
+
+.share-input-group {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.share-input-group input,
+.share-input-group textarea {
+    flex: 1;
+    padding: var(--spacing-md);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+}
+
+.share-input-group .button {
+    flex-shrink: 0;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .builder-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .chat-panel,
+    .preview-panel {
+        height: 500px;
+        max-height: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .journey-header h1 {
+        font-size: 1.8rem;
+    }
+    
+    .journey-actions {
+        flex-direction: column;
+    }
+    
+    .journey-actions .button {
+        width: 100%;
+    }
+    
+    .stages-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .dashboard-header {
+        flex-direction: column;
+        gap: var(--spacing-lg);
+        align-items: flex-start;
+    }
+    
+    .journeys-table {
+        font-size: 0.85rem;
+    }
+    
+    .journeys-table th,
+    .journeys-table td {
+        padding: var(--spacing-md);
+    }
+}

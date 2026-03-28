@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Surgery Day Builder - AI-powered healthcare journey timeline creator for Peck's Mission">
+    <meta name="keywords" content="healthcare, storytelling, timeline, AI, Claude, patient advocacy">
+    <title>Surgery Day Builder - Healthcare Journey Timeline Creator</title>
+    <style>
+        :root {
+            --black: #181b1e;
+            --white: #e8e3d8;
+            --gold: #c9a84c;
+            --clinical: #5b8fa8;
+            --faith: #a05c5c;
+            --family: #c9a84c;
+            --border: #d4ccc0;
+            --bg-light: #f5f2ed;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Georgia', serif;
+            background: var(--bg-light);
+            color: var(--black);
+            line-height: 1.7;
+        }
+        
+        /* Navigation */
+        nav {
+            background: var(--black);
+            color: var(--white);
+            padding: 1.5rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        nav .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        nav h1 {
+            font-size: 1.4rem;
+            font-weight: normal;
+            letter-spacing: 0.1em;
+        }
+        
+        nav a {
+            color: var(--white);
+            text-decoration: none;
+            margin-left: 2rem;
+        }
+        
+        nav a:hover {
+            color: var(--gold);
+        }
+        
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--black) 0%, #2a2d30 100%);
+            color: var(--white);
+            padding: 4rem 2rem;
+            text-align: center;
+            border-bottom: 3px solid var(--gold);
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            font-weight: normal;
+            letter-spacing: 0.05em;
+        }
+        
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            opacity: 0.95;
+        }
+        
+        .hero .subtitle {
+            font-size: 1rem;
+            opacity: 0.8;
+            margin-bottom: 2rem;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            padding: 0.75rem 2rem;
+            background: var(--gold);
+            color: var(--black);
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            border: 2px solid var(--gold);
+        }
+        
+        .cta-button:hover {
+            background: transparent;
+            color: var(--gold);
+        }
+        
+        .cta-button.secondary {
+            background: transparent;
+            color: var(--gold);
+            border: 2px solid var(--gold);
+        }
+        
+        .cta-button.secondary:hover {
+            background: var(--gold);
+            color: var(--black);
+        }
+        
+        /* Main Content */
+        main {
+            padding: 4rem 0;
+        }
+        
+        .section {
+            margin-bottom: 4rem;
+        }
+        
+        .section h2 {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            color: var(--clinical);
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 1rem;
+            letter-spacing: 0.05em;
+        }
+        
+        .section p {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+        
+        /* Features Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .feature-card {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--clinical);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .feature-card h3 {
+            color: var(--clinical);
+            margin-bottom: 0.75rem;
+            font-size: 1.2rem;
+        }
+        
+        .feature-card p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+        
+        .feature-card.faith {
+            border-left-color: var(--faith);
+        }
+        
+        .feature-card.faith h3 {
+            color: var(--faith);
+        }
+        
+        .feature-card.family {
+            border-left-color: var(--family);
+        }
+        
+        .feature-card.family h3 {
+            color: var(--family);
+        }
+        
+        /* Documentation Links */
+        .docs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .doc-card {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+        
+        .doc-card:hover {
+            border-color: var(--clinical);
+            box-shadow: 0 2px 8px rgba(91, 143, 168, 0.1);
+        }
+        
+        .doc-card h3 {
+            color: var(--clinical);
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+        
+        .doc-card p {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        
+        .doc-card a {
+            display: inline-block;
+            color: var(--clinical);
+            text-decoration: none;
+            font-weight: bold;
+            padding: 0.5rem 0;
+            border-bottom: 2px solid transparent;
+            transition: border-color 0.3s ease;
+        }
+        
+        .doc-card a:hover {
+            border-bottom-color: var(--clinical);
+        }
+        
+        /* Code Block */
+        .code-block {
+            background: var(--black);
+            color: var(--white);
+            padding: 1.5rem;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--black);
+            color: var(--white);
+            padding: 2rem;
+            text-align: center;
+            margin-top: 4rem;
+        }
+        
+        footer p {
+            margin-bottom: 0.5rem;
+            opacity: 0.9;
+        }
+        
+        footer a {
+            color: var(--gold);
+            text-decoration: none;
+        }
+        
+        footer a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1.1rem;
+            }
+            
+            nav .container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            nav a {
+                margin-left: 0;
+                margin: 0.5rem 0;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .cta-button {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+        
+        /* Highlighting */
+        .highlight {
+            background: #fffacd;
+            padding: 0 0.25rem;
+        }
+        
+        .divider {
+            height: 2px;
+            background: var(--border);
+            margin: 3rem 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="container">
+            <h1>Peck's Mission</h1>
+            <a href="#overview">Overview</a>
+            <a href="#features">Features</a>
+            <a href="#docs">Documentation</a>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <header class="hero">
+        <div class="container">
+            <h1>Surgery Day Builder</h1>
+            <p>AI-Powered Healthcare Journey Timeline Creator</p>
+            <p class="subtitle">Help people tell their healthcare stories through beautiful, shareable timelines</p>
+            
+            <div class="cta-buttons">
+                <a href="#docs" class="cta-button">Get Started</a>
+                <a href="#overview" class="cta-button secondary">Learn More</a>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Overview Section -->
+        <section class="section" id="overview">
+            <h2>What is Surgery Day Builder?</h2>
+            
+            <p>Surgery Day Builder is a complete, production-ready system that lets any user create beautiful, shareable healthcare journey timelines through conversational AI.</p>
+            
+            <p>Instead of manually creating a Surgery Day page like Joe's, users can:</p>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h3>💬 Chat with AI</h3>
+                    <p>Describe your health journey conversationally. Claude asks clarifying questions about your condition, dates, and milestones.</p>
+                </div>
+                
+                <div class="feature-card clinical">
+                    <h3>🏥 Auto-Generate Timeline</h3>
+                    <p>AI automatically creates surgical stages, timeline entries, color schemes, and can generate medical diagrams.</p>
+                </div>
+                
+                <div class="feature-card faith">
+                    <h3>✨ Tell Your Whole Story</h3>
+                    <p>Include clinical facts, faith moments, family support, and personal reflections — all organized beautifully.</p>
+                </div>
+                
+                <div class="feature-card family">
+                    <h3>🤝 Build Community</h3>
+                    <p>Others can comment, react with emojis (❤️ 🤗 💪 🎉), and share your journey with their networks.</p>
+                </div>
+            </div>
+        </section>
+        
+        <div class="divider"></div>
+        
+        <!-- Features Section -->
+        <section class="section" id="features">
+            <h2>Core Features</h2>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h3>✅ Multi-Turn Chat</h3>
+                    <p>Natural conversation with Claude that maintains context across multiple turns.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>📅 Timeline Pages</h3>
+                    <p>Beautiful, responsive timeline pages similar to the Surgery Day page.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>🔒 Privacy Controls</h3>
+                    <p>Public, semi-private, or private journeys with share tokens and embed codes.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>💾 Database Storage</h3>
+                    <p>Permanent storage in PostgreSQL with JSON fields for flexible data.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>📸 Photo Gallery</h3>
+                    <p>Upload photos to S3 or local storage with AI-generated captions.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>💬 Comments & Reactions</h3>
+                    <p>Community engagement with moderation and emoji reactions.</p>
+                </div>
+            </div>
+        </section>
+        
+        <div class="divider"></div>
+        
+        <!-- Quick Start -->
+        <section class="section">
+            <h2>Quick Start (5 Minutes)</h2>
+            
+            <p><strong>Test the demo immediately (no setup required):</strong></p>
+            
+            <div class="code-block">
+pip install anthropic
+export ANTHROPIC_API_KEY="sk-ant-..."
+python3 demo_journey.py
+            </div>
+            
+            <p>Then have a conversation like:</p>
+            <p><em>"I had Chiari surgery on February 26, 2026. Recovery was 6 weeks."</em></p>
+            
+            <p>Claude will ask follow-ups and generate a complete journey structure you can export to JSON.</p>
+        </section>
+        
+        <div class="divider"></div>
+        
+        <!-- Documentation -->
+        <section class="section" id="docs">
+            <h2>Complete Documentation</h2>
+            
+            <p>Everything you need to understand and implement Surgery Day Builder:</p>
+            
+            <div class="docs-grid">
+                <div class="doc-card">
+                    <h3>📖 QUICK_REFERENCE.md</h3>
+                    <p>5-minute overview of what you're getting and how to start.</p>
+                    <a href="QUICK_REFERENCE.md">Read →</a>
+                </div>
+                
+                <div class="doc-card">
+                    <h3>🚀 INTEGRATION_GUIDE.md</h3>
+                    <p>Step-by-step guide to integrate into your Flask app (30 minutes).</p>
+                    <a href="INTEGRATION_GUIDE.md">Read →</a>
+                </div>
+                
+                <div class="doc-card">
+                    <h3>📚 README_SURGERY_DAY_BUILDER.md</h3>
+                    <p>Complete technical documentation with architecture and features.</p>
+                    <a href="README_SURGERY_DAY_BUILDER.md">Read →</a>
+                </div>
+                
+                <div class="doc-card">
+                    <h3>💾 DATA_STORAGE_GUIDE.md</h3>
+                    <p>Complete guide on storing user data, conversations, and media.</p>
+                    <a href="DATA_STORAGE_GUIDE.md">Read →</a>
+                </div>
+                
+                <div class="doc-card">
+                    <h3>📋 DELIVERY_SUMMARY.txt</h3>
+                    <p>Comprehensive overview of what's included and next steps.</p>
+                    <a href="DELIVERY_SUMMARY.txt">Read →</a>
+                </div>
+                
+                <div class="doc-card">
+                    <h3>🧪 demo_journey.py</h3>
+                    <p>Standalone test script to try the system without Flask.</p>
+                    <a href="demo_journey.py">View →</a>
+                </div>
+            </div>
+        </section>
+        
+        <div class="divider"></div>
+        
+        <!-- Implementation Files -->
+        <section class="section">
+            <h2>Implementation Files</h2>
+            
+            <p>All the code you need to build Surgery Day Builder:</p>
+            
+            <h3 style="margin-top: 2rem; color: var(--clinical);">Backend (Python)</h3>
+            <p>
+                <a href="models_health_journey.py" style="color: var(--clinical); text-decoration: none; margin-right: 2rem; font-weight: bold;">→ models_health_journey.py</a>
+                <a href="services_journey_generator.py" style="color: var(--clinical); text-decoration: none; margin-right: 2rem; font-weight: bold;">→ services_journey_generator.py</a>
+                <a href="routes_journey.py" style="color: var(--clinical); text-decoration: none; font-weight: bold;">→ routes_journey.py</a>
+            </p>
+            
+            <h3 style="margin-top: 2rem; color: var(--clinical);">Frontend (HTML)</h3>
+            <p>
+                <a href="templates_journey_builder.html" style="color: var(--clinical); text-decoration: none; margin-right: 2rem; font-weight: bold;">→ templates_journey_builder.html</a>
+                <a href="templates_journey_view.html" style="color: var(--clinical); text-decoration: none; font-weight: bold;">→ templates_journey_view.html</a>
+            </p>
+        </section>
+        
+        <div class="divider"></div>
+        
+        <!-- Architecture -->
+        <section class="section">
+            <h2>System Architecture</h2>
+            
+            <p><strong>How it works:</strong></p>
+            
+            <div class="code-block">
+User Chat → Claude Multi-turn → Extract JSON → Save to DB → Publish Page
+    ↓
+Multi-turn Conversation
+(Gathers: condition, dates, milestones, faith/family elements)
+    ↓
+Extracts Structured Data
+(stages, timeline_entries, color_scheme)
+    ↓
+Creates Journey Page
+(/health-journey/&lt;slug&gt;)
+            </div>
+            
+            <h3 style="margin-top: 2rem; color: var(--clinical);">Storage</h3>
+            <p>
+                <strong>During Chat:</strong> Flask Session or Redis (temporary, 24 hours)<br>
+                <strong>After Publishing:</strong> PostgreSQL Database (permanent)<br>
+                <strong>Photos/Videos:</strong> S3 or Local Filesystem (permanent)<br>
+                <strong>Comments:</strong> PostgreSQL Database (permanent)
+            </p>
+            
+            <h3 style="margin-top: 2rem; color: var(--clinical);">Database Tables</h3>
+            <p>
+                <strong>health_journeys</strong> - Journey metadata and AI-generated content<br>
+                <strong>journey_comments</strong> - Visitor comments and reactions
+            </p>
+        </section>
+        
+        <div class="divider"></div>
+        
+        <!-- Next Steps -->
+        <section class="section">
+            <h2>Next Steps</h2>
+            
+            <h3 style="margin-top: 1.5rem; color: var(--faith);">For Joe (Founder)</h3>
+            <p>
+                1. Test <code style="background: var(--bg-light); padding: 0.25rem 0.5rem;">demo_journey.py</code> yourself<br>
+                2. Review the AI prompts and generated structures<br>
+                3. Plan early user testing (3-5 beta users)<br>
+                4. Think about integration with Peck's Mission
+            </p>
+            
+            <h3 style="margin-top: 1.5rem; color: var(--faith);">For Jonah (Developer)</h3>
+            <p>
+                1. Review the code structure and architecture<br>
+                2. Follow INTEGRATION_GUIDE.md step-by-step (30 minutes)<br>
+                3. Test with demo journeys<br>
+                4. Deploy to staging and iterate
+            </p>
+            
+            <h3 style="margin-top: 1.5rem; color: var(--faith);">This Week</h3>
+            <p>
+                ✅ Integrate into Peck's Mission codebase<br>
+                ✅ Run database migrations<br>
+                ✅ Test with 3-5 demo journeys<br>
+                ✅ Verify all features working
+            </p>
+        </section>
+        
+        <div class="divider"></div>
+        
+        <!-- Stats -->
+        <section class="section" style="text-align: center;">
+            <h2>By The Numbers</h2>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h3 style="font-size: 2rem; color: var(--clinical);">~3,500</h3>
+                    <p>Lines of code (backend + frontend)</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3 style="font-size: 2rem; color: var(--clinical);">9</h3>
+                    <p>Complete implementation files</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3 style="font-size: 2rem; color: var(--clinical);">30 min</h3>
+                    <p>Time to integrate into Flask</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3 style="font-size: 2rem; color: var(--clinical);">5 min</h3>
+                    <p>Time to first journey</p>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <!-- Footer -->
+    <footer>
+        <p><strong>Surgery Day Builder</strong> — AI-Powered Healthcare Journey Timeline Creator</p>
+        <p>Built for <a href="https://pecksmission.com">Peck's Mission</a> | Powered by Claude AI</p>
+        <p style="margin-top: 1rem; font-size: 0.9rem;">
+            <a href="QUICK_REFERENCE.md">Quick Reference</a> •
+            <a href="INTEGRATION_GUIDE.md">Integration Guide</a> •
+            <a href="README_SURGERY_DAY_BUILDER.md">Full Docs</a> •
+            <a href="DATA_STORAGE_GUIDE.md">Data Storage</a>
+        </p>
+        <p style="margin-top: 1rem; opacity: 0.7; font-size: 0.85rem;">
+            Healthcare storytelling platform • Open source • Ready to deploy
+        </p>
+    </footer>
+</body>
+</html>

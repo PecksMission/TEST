@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Surgery Day Builder{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="container">
+        <div class="dashboard-header">
+            <h1>My Journeys</h1>
+            <a href="{{ url_for('journey.builder') }}" class="button button-primary">+ Create New Journey</a>
+        </div>
+        
+        {% if journeys %}
+            <div class="journeys-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Condition</th>
+                            <th>Status</th>
+                            <th>Privacy</th>
+                            <th>Created</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for journey in journeys %}
+                        <tr>
+                            <td><strong>{{ journey.title }}</strong></td>
+                            <td>{{ journey.condition }}</td>
+                            <td><span class="badge badge-{{ journey.status }}">{{ journey.status }}</span></td>
+                            <td><span class="badge badge-{{ journey.privacy }}">{{ journey.privacy }}</span></td>
+                            <td>{{ journey.created_at.strftime('%b %d, %Y') }}</td>
+                            <td class="actions">
+                                <a href="{{ url_for('health.view_journey', slug=journey.slug) }}" class="button button-small">View</a>
+                                <a href="{{ url_for('journey.edit_journey', id=journey.id) }}" class="button button-small">Edit</a>
+                                <button class="button button-small button-danger" onclick="deleteJourney('{{ journey.id }}')">Delete</button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <div class="empty-icon">📝</div>
+                <h2>No journeys yet</h2>
+                <p>Start by creating your first health journey</p>
+                <a href="{{ url_for('journey.builder') }}" class="button button-primary">Create Journey</a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/journey.css') }}">
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function deleteJourney(journeyId) {
+    if (confirm('Are you sure you want to delete this journey?')) {
+        fetch(`/api/journey/${journeyId}`, { method: 'DELETE' })
+            .then(response => {
+                if (response.ok) {
+                    window.location.reload();
+                } else {
+                    alert('Error deleting journey');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to delete journey');
+            });
+    }
+}
+</script>
+{% endblock %}

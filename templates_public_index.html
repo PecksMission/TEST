@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Surgery Day Builder{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div class="container">
+        <h1>Your Health Story Matters</h1>
+        <p>Share your healthcare journey through beautiful, interactive timelines</p>
+        {% if not current_user.is_authenticated %}
+            <div class="hero-buttons">
+                <a href="{{ url_for('auth.register') }}" class="button button-primary">Get Started</a>
+                <a href="{{ url_for('public.about') }}" class="button button-secondary">Learn More</a>
+            </div>
+        {% else %}
+            <div class="hero-buttons">
+                <a href="{{ url_for('journey.builder') }}" class="button button-primary">Create Your Journey</a>
+                <a href="{{ url_for('journey.dashboard') }}" class="button button-secondary">View Your Journeys</a>
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+<section class="featured">
+    <div class="container">
+        <h2>Featured Journeys</h2>
+        <p class="section-subtitle">Read inspiring stories from our community</p>
+        
+        {% if featured_journeys %}
+            <div class="journeys-grid">
+                {% for journey in featured_journeys %}
+                    <article class="journey-card">
+                        <div class="journey-card-content">
+                            <h3>{{ journey.title }}</h3>
+                            <p class="condition">{{ journey.condition }}</p>
+                            <p class="summary">{{ journey.summary[:100] }}...</p>
+                            <div class="journey-meta">
+                                <span class="date">{{ journey.created_at.strftime('%b %d, %Y') }}</span>
+                                <span class="views">{{ journey.view_count }} views</span>
+                            </div>
+                        </div>
+                        <a href="{{ url_for('health.view_journey', slug=journey.slug) }}" class="journey-card-link">
+                            Read Journey →
+                        </a>
+                    </article>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <p>No public journeys yet. Be the first to share your story!</p>
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+<section class="features">
+    <div class="container">
+        <h2>How It Works</h2>
+        
+        <div class="features-grid">
+            <div class="feature">
+                <div class="feature-icon">💬</div>
+                <h3>Chat with AI</h3>
+                <p>Describe your health journey in a natural conversation with Claude AI</p>
+            </div>
+            
+            <div class="feature">
+                <div class="feature-icon">📅</div>
+                <h3>Auto-Generate Timeline</h3>
+                <p>AI creates beautiful stages, timeline entries, and visual elements</p>
+            </div>
+            
+            <div class="feature">
+                <div class="feature-icon">✨</div>
+                <h3>Tell Your Whole Story</h3>
+                <p>Include clinical facts, faith moments, and family support in one place</p>
+            </div>
+            
+            <div class="feature">
+                <div class="feature-icon">🤝</div>
+                <h3>Build Community</h3>
+                <p>Share with others, read comments, and celebrate together</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

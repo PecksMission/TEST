@@ -1,0 +1,526 @@
+================================================================================
+DATA STORAGE GUIDE - SURGERY DAY BUILDER
+How to Store User Information, Journeys, and Media
+================================================================================
+
+QUICK ANSWER: Where does user data go?
+================================================================================
+
+USER TYPES MESSAGE IN CHAT
+    ↓
+    Stored in: Flask Session or Redis (temporary, while chatting)
+    Duration: Until user publishes
+    
+USER PUBLISHES JOURNEY
+    ↓
+    Stored in: PostgreSQL Database
+    Tables: health_journeys, journey_comments
+    Duration: Indefinite (until user deletes)
+    
+USER UPLOADS PHOTO
+    ↓
+    Photo file: S3 or Local filesystem
+    Photo URL: PostgreSQL Database (in JSON field)
+    Duration: Indefinite
+    
+VISITOR POSTS COMMENT
+    ↓
+    Stored in: PostgreSQL Database
+    Table: journey_comments
+    Duration: Indefinite
+
+
+================================================================================
+PART 1: DATABASE STORAGE (PostgreSQL)
+================================================================================
+
+TWO MAIN TABLES:
+
+1. health_journeys (Main journey data)
+   ├── Journey metadata (title, condition, dates)
+   ├── AI-generated content (stages, entries, colors) - stored as JSON
+   ├── Privacy settings (public/semi-private/private)
+   ├── Media references (URLs to photos/videos)
+   └── Timestamps (created_at, updated_at)
+
+2. journey_comments (Visitor feedback)
+   ├── Comment text
+   ├── Commenter name & email
+   ├── Reactions (❤️ 🤗 💪 🎉) - stored as JSON
+   └── Timestamps
+
+ESTIMATED STORAGE:
+- Per journey: 5-50 KB
+- Per comment: 500 bytes - 2 KB
+- 1000 journeys: ~50 MB
+- 100,000 journeys: ~5 GB
+
+BACKUPS:
+- Run automatic daily backups
+- Keep 30-day backup history
+- Store on S3 for safety
+
+
+================================================================================
+PART 2: SESSION STORAGE (While User is Chatting)
+================================================================================
+
+While the user is creating their journey, the conversation is stored temporarily:
+
+OPTION A: Flask Session (Simple, for development)
+- Stored in: Flask's built-in session
+- Duration: Browser session (or configured timeout)
+- Size limit: ~4 KB per session
+- Best for: Single server, small traffic
+
+OPTION B: Redis (Better, for production)
+- Stored in: Redis in-memory database
+- Duration: 24 hours (auto-expire)
+- Size limit: Unlimited
+- Best for: Multiple servers, many users
+
+CONVERSATION INCLUDES:
+- User messages
+- Claude's responses
+- Timestamps
+- Turn numbers
+
+STORAGE EXAMPLE:
+redis key: "journey:session:abc-123-def"
+redis value: {
+    "conversation": [
+        {
+            "turn": 1,
+            "user": "I had Chiari surgery...",
+            "assistant": "Tell me more about recovery..."
+        },
+        {
+            "turn": 2,
+            "user": "6 weeks, with faith support",
+            "assistant": "Generated journey structure..."
+        }
+    ]
+}
+
+When user publishes journey:
+- Delete from Redis
+- Save to PostgreSQL
+
+
+================================================================================
+PART 3: FILE STORAGE (Photos, Videos)
+================================================================================
+
+TWO OPTIONS:
+
+OPTION A: Local Filesystem
+├── Location: static/uploads/ on server
+├── Cost: Free (just disk space)
+├── Setup: 5 minutes
+├── Pros: Simple, full control
+└── Cons: Doesn't scale, limited by disk
+
+Directory structure:
+static/uploads/
+├── journey-uuid-photo-1.jpg
+├── journey-uuid-photo-2.jpg
+├── journey-uuid-video-1.mp4
+└── ...
+
+OPTION B: AWS S3 Cloud Storage
+├── Location: S3 bucket in cloud
+├── Cost: ~$0.023 per GB stored
+├── Setup: 15 minutes
+├── Pros: Scales infinitely, fast delivery
+└── Cons: Monthly cost, setup complexity
+
+S3 structure:
+s3://pecksmission-journeys/
+├── journeys/
+│   ├── journey-uuid-1/
+│   │   └── photos/
+│   │       ├── 1710008400.jpg
+│   │       └── 1710008500.jpg
+│   └── journey-uuid-2/
+│       └── photos/
+│           └── 1710009000.jpg
+
+FILE METADATA STORED IN DATABASE:
+In health_journeys.gallery_photos (JSON field):
+[
+    {
+        "url": "https://s3.amazonaws.com/...photo.jpg",
+        "caption": "First walk after surgery",
+        "date": "2026-03-15",
+        "size_bytes": 2048576
+    }
+]
+
+FILES NOT STORED DIRECTLY IN DATABASE:
+- Photos are on disk/S3
+- Videos are on disk/S3
+- Database only stores URLS
+
+
+================================================================================
+PART 4: DATA FLOW DIAGRAM
+================================================================================
+
+Create Journey:
+
+1. User visits /journey/builder
+   ↓
+   Session created: "abc-123"
+   Stored in: Flask session (memory)
+
+2. User types: "I had Chiari surgery..."
+   ↓
+   Sent to: POST /api/journey/chat
+   Session ID: "abc-123"
+
+3. Claude generates response
+   ↓
+   Returned to browser
+   User sees: AI response + preview
+
+4. User continues conversation
+   ↓
+   Each turn stored in: Session (memory)
+   NOT saved to database yet
+
+5. Claude generates complete structure
+   ↓
+   Sent to browser as JSON
+   User clicks "Publish"
+
+6. User publishes journey
+   ↓
+   POST /api/journey with all data
+   Data includes: title, stages, entries, colors
+
+7. Backend saves to database
+   ↓
+   INSERT into health_journeys
+   Stored in: PostgreSQL
+   
+8. Session cleaned up
+   ↓
+   Delete from: Flask session
+   Clear from: Memory
+
+9. Journey is now live
+   ↓
+   Available at: /health-journey/chiari-surgery-recovery
+   Stored in: PostgreSQL
+
+
+Upload Photos:
+
+1. User clicks "Add Photo"
+   ↓
+   POST /api/journey/<id>/upload-photo
+
+2. File uploaded to disk/S3
+   ↓
+   Saved to: static/uploads/ or S3
+
+3. URL stored in database
+   ↓
+   Updated: health_journeys.gallery_photos
+   Stored as: JSON array of URLs
+
+4. Photo appears in journey
+   ↓
+   Loaded from: Disk/S3
+   Displayed in: Journey page
+
+
+Add Comments:
+
+1. Visitor views journey
+   ↓
+   GET /health-journey/chiari-surgery-recovery
+
+2. Visitor enters comment
+   ↓
+   POST /api/journey/<id>/comments
+
+3. Comment saved to database
+   ↓
+   INSERT into journey_comments
+
+4. Comment appears on page
+   ↓
+   Fetched from: PostgreSQL
+   Displayed in: Comments section
+
+
+================================================================================
+PART 5: WHAT DATA IS STORED WHERE
+================================================================================
+
+STRUCTURED DATA (PostgreSQL):
+├── User ID (who created it)
+├── Journey title & condition
+├── Start & end dates
+├── Privacy level
+├── Share token
+├── Timestamps
+└── Comments & reactions
+
+JSON DATA (PostgreSQL - flexible format):
+├── Stages: [{name, description, color}, ...]
+├── Timeline entries: [{date, type, title, content}, ...]
+├── Color scheme: {clinical, faith, family, accent}
+├── Gallery photos: [{url, caption, date}, ...]
+├── Reactions: [{type, user_id, date}, ...]
+└── Videos: [{url, title, thumbnail}, ...]
+
+FILE DATA (S3 or Local):
+├── Photo files (JPG, PNG, WebP)
+├── Video files (MP4, MOV, WebM)
+├── SVG diagrams (generated by Claude)
+└── Thumbnails
+
+SESSION DATA (Memory - Temporary):
+├── Conversation history (while chatting)
+├── Session ID
+├── User input (while typing)
+└── Auto-delete after 24 hours
+
+CACHED DATA (Redis):
+├── Popular journeys (1 hour)
+├── Recent comments (30 minutes)
+└── Session data (24 hours)
+
+
+================================================================================
+PART 6: EXAMPLE - COMPLETE DATA JOURNEY
+================================================================================
+
+Step 1: User creates account
+        Stored in: users table
+        Data: name, email, password_hash
+
+Step 2: User visits /journey/builder
+        Session ID created: "session-abc-123"
+        Stored in: Flask session (memory)
+
+Step 3: User types first message
+        Message: "I had Chiari surgery February 26..."
+        Stored in: Session memory (not database)
+
+Step 4: Claude responds
+        Response: "Tell me more about recovery..."
+        Stored in: Session memory (not database)
+
+Step 5: User continues chatting (repeat 3-4)
+        Multiple turns stored in: Session memory
+
+Step 6: Claude generates structure
+        Structure includes:
+        - title: "Chiari Surgery Recovery"
+        - condition: "Chiari Type I"
+        - stages: [{name, description, color}, ...]
+        - timeline_entries: [{date, type, title, content}, ...]
+        - color_scheme: {colors}
+        Stored in: Session memory (sent to browser)
+
+Step 7: User uploads photos
+        Files: photo1.jpg, photo2.jpg
+        Stored on disk: static/uploads/journey-uuid-*
+        URLs in database: health_journeys.gallery_photos JSON
+
+Step 8: User clicks "Publish"
+        All data from session sent to backend:
+        POST /api/journey {
+            title, condition, stages, entries,
+            color_scheme, gallery_photos, ...
+        }
+
+Step 9: Backend saves to database
+        INSERT into health_journeys:
+        id: generated UUID
+        user_id: current_user.id
+        slug: "chiari-surgery-recovery"
+        title: "Chiari Surgery Recovery"
+        condition: "Chiari Type I"
+        stages: [JSON]
+        timeline_entries: [JSON]
+        color_scheme: {JSON}
+        gallery_photos: [{url, caption}, ...]
+        is_published: true
+        privacy: "private"
+        created_at: now()
+
+Step 10: Session deleted
+         Session memory cleared
+         Conversation history removed
+         Redis session deleted (if using Redis)
+
+Step 11: Journey is live
+         URL: /health-journey/chiari-surgery-recovery
+         Data loaded from: PostgreSQL
+         Photos loaded from: S3 or local disk
+         Comments loaded from: journey_comments table
+
+Step 12: Visitor posts comment
+         Comment: "What an inspiring journey!"
+         Stored in: journey_comments table
+         Data: user_name, user_email, comment text
+
+Step 13: Visitor adds reaction
+         Reaction: "heart"
+         Updated in: journey_comments.reactions JSON
+         Data: reaction type, user_id, timestamp
+
+
+================================================================================
+PART 7: STORAGE LIMITS & COSTS
+================================================================================
+
+PostgreSQL:
+├── Unlimited rows
+├── Unlimited text fields
+├── JSON fields can be large
+├── Monthly cost: $5-50 (AWS RDS)
+└── Scalable to petabytes
+
+Local Filesystem:
+├── Limited by server disk space
+├── Example: 1TB disk = ~20,000 high-res photos
+├── Monthly cost: $0 (just disk)
+└── Not scalable for large apps
+
+AWS S3:
+├── Unlimited storage
+├── Cost: $0.023/GB/month
+├── Example: 1000 photos (5GB) = ~$0.12/month
+└── Highly scalable
+
+Redis:
+├── In-memory, not persistent
+├── Limited by RAM
+├── Recommended: 1-2 GB for 10,000 sessions
+├── Monthly cost: $5-15 (AWS ElastiCache)
+└── Fast, volatile (use for sessions only)
+
+
+================================================================================
+PART 8: SECURITY CONSIDERATIONS
+================================================================================
+
+Database:
+├── Use parameterized queries (SQLAlchemy does this)
+├── Hash passwords (bcrypt, argon2)
+├── Encrypt sensitive fields if needed
+├── Regular backups
+├── Access control (only app can access)
+└── SQL injection: Protected ✓
+
+Files:
+├── Validate file type (not just extension)
+├── Validate file size
+├── Rename files (don't trust user filenames)
+├── Scan for viruses (if handling untrusted uploads)
+├── Serve from CDN (not directly from disk)
+└── XSS: Protected by serving from separate domain ✓
+
+Sessions:
+├── Use HTTPS only
+├── Set Secure flag on cookies
+├── Set HttpOnly flag (prevent JS access)
+├── Use random session IDs
+├── Auto-expire after 24 hours
+└── Prevent session fixation ✓
+
+
+================================================================================
+PART 9: BACKUP STRATEGY
+================================================================================
+
+Database Backups:
+├── Frequency: Daily
+├── Retention: 30 days
+├── Location: AWS S3
+├── Automation: AWS RDS automated backups
+├── Testing: Restore test monthly
+└── Cost: Included in RDS
+
+File Backups:
+├── Frequency: Continuous (if using S3)
+├── Retention: S3 versioning enabled
+├── Location: S3 with cross-region replication
+├── Automation: AWS S3 lifecycle policies
+└── Cost: ~10% of storage for versioning
+
+Disaster Recovery:
+├── RPO (Recovery Point): 1 day
+├── RTO (Recovery Time): 4 hours
+├── Plan: Documented
+├── Testing: Quarterly
+└── Cost: Included in above
+
+
+================================================================================
+NEXT STEPS
+================================================================================
+
+1. Choose storage approach:
+   ☐ Local files (development)
+   ☐ S3 (production)
+
+2. Set up database:
+   ☐ Create PostgreSQL instance
+   ☐ Run migrations
+   ☐ Test connection
+
+3. Configure file handling:
+   ☐ Set UPLOAD_FOLDER
+   ☐ Set MAX_FILE_SIZE
+   ☐ Configure S3 (if using)
+
+4. Set up sessions:
+   ☐ Use Flask session (simple)
+   ☐ Or set up Redis (better)
+
+5. Test the flow:
+   ☐ Create a journey
+   ☐ Verify in database
+   ☐ Upload photos
+   ☐ Add comments
+
+6. Monitor:
+   ☐ Database size
+   ☐ S3 costs
+   ☐ Session cleanup
+   ☐ Backup status
+
+================================================================================
+SUMMARY: WHERE DATA GOES
+================================================================================
+
+During Chat (temporary):
+  Stored in: Flask Session or Redis
+  Duration: 24 hours
+  Example: user_message, ai_response
+
+After Publishing (permanent):
+  Stored in: PostgreSQL Database
+  Duration: Indefinite
+  Example: title, stages, entries, colors
+
+Photo/Video Files:
+  Stored in: S3 or Local Filesystem
+  Duration: Indefinite
+  Referenced from: Database (JSON URL)
+
+Comments & Reactions:
+  Stored in: PostgreSQL Database
+  Duration: Indefinite
+  Indexed by: journey_id
+
+
+That's it! All user data flows through these three destinations.
+
+================================================================================
